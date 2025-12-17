@@ -1,7 +1,5 @@
 # 🏅 IFSPORT
 
-## 📌 Nome do Projeto
-
 **IFSPORT – Sistema de Inscrições e Informações Esportivas do IFRN**
 
 ---
