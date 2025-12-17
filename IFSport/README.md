@@ -48,7 +48,7 @@ IFSport/
 |   └── sistema_esportivo.sql
 |    
 └── README.md              
-
+```
 ### ▶️ Como executar o projeto
 
 1. Acesse a pasta do projeto:
