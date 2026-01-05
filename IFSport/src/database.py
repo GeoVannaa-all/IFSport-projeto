@@ -1,25 +1,19 @@
 import sqlite3
 
 class Database:
-    def __init__(self, nome_banco="sistema_esportivo.db"):
-        self.nome_banco = nome_banco
+    def __init__(self):
+        self.connection = sqlite3.connect(
+            "sistema_esportivo.db",
+            check_same_thread=False
+        )
+        self.cursor = self.connection.cursor()
 
-    def conectar(self):
-        return sqlite3.connect(self.nome_banco)
+    def execute(self, query, params=()):
+        self.cursor.execute(query, params)
+        self.connection.commit()
 
-    def criar_tabelas(self):
-        conn = self.conectar()
-        cursor = conn.cursor()
+    def fetchall(self):
+        return self.cursor.fetchall()
 
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Aluno (
-            id_aluno INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT,
-            email TEXT,
-            senha TEXT,
-            curso TEXT
-        );
-        """)
-
-        conn.commit()
-        conn.close()
+    def fetchone(self):
+        return self.cursor.fetchone()

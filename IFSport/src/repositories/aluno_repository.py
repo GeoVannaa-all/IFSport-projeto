@@ -1,32 +1,29 @@
-import sqlite3
+from repositories.database import Database
 from models.aluno import Aluno
 
 class AlunoRepository:
-    def __init__(self, nome_banco="sistema_esportivo.db"):
-        self.nome_banco = nome_banco
+    def __init__(self, db: Database):
+        self.db = db
 
-    def salvar(self, aluno: Aluno):
-        conn = sqlite3.connect(self.nome_banco)
-        cursor = conn.cursor()
+    def validar_login(self, email, senha):
+        query = "SELECT * FROM Aluno WHERE email = %s AND senha = %s"
+        self.db.query(query, (email, senha))
+        aluno_data = self.db.fetchone()
+        if aluno_data:
+            return Aluno(*aluno_data)
+        return None
 
-        cursor.execute("""
-        INSERT INTO Aluno (nome, email, senha, curso)
-        VALUES (?, ?, ?, ?)
-        """, (aluno.nome, aluno.email, aluno.senha, aluno.curso))
+    def inscrever_aluno_evento(self, aluno_id, modalidade_id):
+        query = "INSERT INTO Inscricao (id_aluno, id_modalidade, data_inscricao, status) VALUES (%s, %s, NOW(), 'Pendente')"
+        try:
+            self.db.query(query, (aluno_id, modalidade_id))
+            return True
+        except Exception as e:
+            print(e)
+            return False
 
-        conn.commit()
-        conn.close()
-
-    def listar(self):
-        conn = sqlite3.connect(self.nome_banco)
-        cursor = conn.cursor()
-
-        cursor.execute("SELECT * FROM Aluno")
-        registros = cursor.fetchall()
-
-        alunos = []
-        for r in registros:
-            alunos.append(Aluno(r[1], r[2], r[3], r[4], r[0]))
-
-        conn.close()
-        return alunos
+    def get_notificacoes(self, aluno_id):
+        query = "SELECT * FROM Notificacao WHERE id_aluno = %s"
+        self.db.query(query, (aluno_id,))
+        notificacoes_data = self.db.fetchall()
+        return [Notificacao(*n) for n in notificacoes_data]
