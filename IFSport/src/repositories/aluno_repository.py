@@ -1,10 +1,24 @@
 from repositories.database import Database
 from models.aluno import Aluno
+from datetime import date
 
 class AlunoRepository:
     def __init__(self, db: Database):
         self.db = db
 
+    def cadastrar_aluno(self, nome, email, senha, data_nascimento, matricula, curso):
+        data_cadastro = date.today().isoformat()
+        sql = """
+        INSERT INTO Aluno (nome, email, senha, data_nascimento, matricula, curso, data_cadastro)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """
+        self.db.execute(sql, (nome, email, senha, data_nascimento, matricula, curso, data_cadastro))
+
+    def login_aluno(self, email, senha):
+        sql = "SELECT * FROM Aluno WHERE email=? AND senha=?"
+        cursor = self.db.execute(sql, (email, senha))
+        return cursor.fetchone()
+    
     def validar_login(self, email, senha):
         query = "SELECT * FROM Aluno WHERE email = %s AND senha = %s"
         self.db.query(query, (email, senha))

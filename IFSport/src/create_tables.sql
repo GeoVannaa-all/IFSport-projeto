@@ -1,23 +1,30 @@
+-- ----------------------------
+-- BANCO DE DADOS IFSPORT
+-- ----------------------------
+
+-- TABELA ALUNO
 CREATE TABLE IF NOT EXISTS Aluno (
     id_aluno INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
-    email TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
     senha TEXT NOT NULL,
-    data_nascimento DATE,
+    data_nascimento TEXT,
     matricula TEXT,
     curso TEXT,
-    data_cadastro DATE
+    data_cadastro TEXT
 );
 
+-- TABELA SERVIDOR
 CREATE TABLE IF NOT EXISTS Servidor (
     id_servidor INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
     email TEXT NOT NULL,
     senha TEXT NOT NULL,
     cargo TEXT,
-    data_cadastro DATE
+    data_cadastro TEXT
 );
 
+-- TABELA MODALIDADE
 CREATE TABLE IF NOT EXISTS Modalidade (
     id_modalidade INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
@@ -26,9 +33,10 @@ CREATE TABLE IF NOT EXISTS Modalidade (
     status TEXT
 );
 
+-- TABELA INSCRICAO
 CREATE TABLE IF NOT EXISTS Inscricao (
     id_inscricao INTEGER PRIMARY KEY AUTOINCREMENT,
-    data_inscricao DATE,
+    data_inscricao TEXT,
     status TEXT,
     id_aluno INTEGER,
     id_modalidade INTEGER,
@@ -36,19 +44,42 @@ CREATE TABLE IF NOT EXISTS Inscricao (
     FOREIGN KEY (id_modalidade) REFERENCES Modalidade(id_modalidade)
 );
 
+-- TABELA SELETIVA
+CREATE TABLE IF NOT EXISTS Seletiva (
+    id_seletiva INTEGER PRIMARY KEY AUTOINCREMENT,
+    data TEXT,
+    local TEXT,
+    criterio TEXT,
+    id_modalidade INTEGER,
+    FOREIGN KEY (id_modalidade) REFERENCES Modalidade(id_modalidade)
+);
+
+-- TABELA RESULTADO_SELETIVA
+CREATE TABLE IF NOT EXISTS Resultado_Seletiva (
+    id_seletiva INTEGER,
+    id_aluno INTEGER,
+    resultado TEXT,
+    observacao TEXT,
+    PRIMARY KEY (id_seletiva, id_aluno),
+    FOREIGN KEY (id_seletiva) REFERENCES Seletiva(id_seletiva),
+    FOREIGN KEY (id_aluno) REFERENCES Aluno(id_aluno)
+);
+
+-- TABELA POSTAGEM
 CREATE TABLE IF NOT EXISTS Postagem (
     id_postagem INTEGER PRIMARY KEY AUTOINCREMENT,
     titulo TEXT,
     conteudo TEXT,
-    data_postagem DATE,
+    data_postagem TEXT,
     id_servidor INTEGER,
     FOREIGN KEY (id_servidor) REFERENCES Servidor(id_servidor)
 );
 
+-- TABELA NOTIFICACAO
 CREATE TABLE IF NOT EXISTS Notificacao (
     id_notificacao INTEGER PRIMARY KEY AUTOINCREMENT,
     mensagem TEXT,
-    data_envio DATE,
+    data_envio TEXT,
     lida INTEGER,
     id_aluno INTEGER,
     id_servidor INTEGER,
