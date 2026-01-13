@@ -2,11 +2,15 @@ from repositories.database import Database
 from models.modalidade import Modalidade
 
 class ModalidadeRepository:
-    def __init__(self, db: Database):
+    def __init__(self, db):
         self.db = db
 
-    def get_modalidades(self):
-        query = "SELECT * FROM Modalidade"
-        self.db.query(query)
-        modalidades_data = self.db.fetchall()
-        return [Modalidade(*m) for m in modalidades_data]
+    def listar(self):
+        return self.db.fetchall("SELECT * FROM modalidade")
+
+    def reduzir_vaga(self, modalidade_id):
+        self.db.execute(
+            "UPDATE modalidade SET vagas = vagas - 1 WHERE id = ? AND vagas > 0",
+            (modalidade_id,)
+        )
+

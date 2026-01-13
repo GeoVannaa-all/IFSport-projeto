@@ -1,8 +1,4 @@
--- ----------------------------
--- BANCO DE DADOS IFSPORT
--- ----------------------------
 
--- TABELA ALUNO
 CREATE TABLE IF NOT EXISTS Aluno (
     id_aluno INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
@@ -68,8 +64,9 @@ CREATE TABLE IF NOT EXISTS Resultado_Seletiva (
 -- TABELA POSTAGEM
 CREATE TABLE IF NOT EXISTS Postagem (
     id_postagem INTEGER PRIMARY KEY AUTOINCREMENT,
-    titulo TEXT,
-    conteudo TEXT,
+    titulo TEXT NOT NULL,
+    conteudo TEXT NOT NULL,
+    imagem BLOB,
     data_postagem TEXT,
     id_servidor INTEGER,
     FOREIGN KEY (id_servidor) REFERENCES Servidor(id_servidor)
@@ -85,4 +82,23 @@ CREATE TABLE IF NOT EXISTS Notificacao (
     id_servidor INTEGER,
     FOREIGN KEY (id_aluno) REFERENCES Aluno(id_aluno),
     FOREIGN KEY (id_servidor) REFERENCES Servidor(id_servidor)
+);
+CREATE TABLE IF NOT EXISTS Curtida (
+    id_curtida INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_aluno INTEGER,
+    id_postagem INTEGER,
+    FOREIGN KEY (id_aluno) REFERENCES Aluno(id_aluno),
+    FOREIGN KEY (id_postagem) REFERENCES Postagem(id_postagem),
+    UNIQUE (id_aluno, id_postagem)
+);
+
+
+CREATE TABLE IF NOT EXISTS Comentario (
+    id_comentario INTEGER PRIMARY KEY AUTOINCREMENT,
+    texto TEXT NOT NULL,
+    data TEXT,
+    id_aluno INTEGER,
+    id_postagem INTEGER,
+    FOREIGN KEY (id_aluno) REFERENCES Aluno(id_aluno),
+    FOREIGN KEY (id_postagem) REFERENCES Postagem(id_postagem)
 );
