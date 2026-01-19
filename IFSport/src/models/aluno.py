@@ -8,3 +8,6 @@ class Aluno:
         self.matricula = matricula
         self.curso = curso
         self.data_cadastro = data_cadastro
+
+
+assfsf
