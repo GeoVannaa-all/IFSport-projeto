@@ -44,7 +44,7 @@ class Aluno:
 
     @senha.setter
     def senha(self, senha):
-        if len(senha) < 6:
+        if len(senha) < 3:
             raise ValueError("Senha muito curta")
         self.__senha = senha
 

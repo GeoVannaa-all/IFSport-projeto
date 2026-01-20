@@ -105,7 +105,7 @@ def mostrar_login_aluno():
     if st.button("Entrar", key="btn_login_aluno"):
         aluno = aluno_repo.login_aluno(email, senha)
         if aluno:
-            st.session_state.aluno_logado = (aluno[0], aluno[1])
+            st.session_state.aluno_logado = (aluno.id_aluno, aluno.nome)
             st.session_state.page = "dashboard_aluno"
         else:
             st.error("Email ou senha inválidos")

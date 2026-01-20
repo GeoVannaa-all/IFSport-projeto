@@ -27,7 +27,7 @@ class AlunoRepository:
 
     # LOGIN
  
-    def login(self, email, senha):
+    def login_aluno(self, email, senha):
         sql = "SELECT * FROM Aluno WHERE email = ? AND senha = ?"
         cursor = self.db.execute(sql, (email, senha))
         aluno_data = cursor.fetchone()
