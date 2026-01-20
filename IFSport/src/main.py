@@ -123,13 +123,31 @@ def mostrar_cadastro_aluno():
         key="cad_data"
     )
     matricula = st.text_input("Matrícula", key="cad_matricula")
-    curso = st.text_input("Curso", key="cad_curso")
+
+    curso = st.selectbox(
+        "Curso",
+        [
+            "Infoweb",
+            "Administração",
+            "MSI",
+            "Controle Ambiental",
+            "Mineração",
+            "Geologia",
+            "Edificações",
+            "Eletrotécnica",
+            "Mecânica"
+        ],
+        key="cad_curso"
+    )
 
     if st.button("Cadastrar", key="btn_confirmar_cadastro"):
         aluno_repo.cadastrar_aluno(
-            nome, email, senha,
+            nome,
+            email,
+            senha,
             data_nascimento.isoformat(),
-            matricula, curso
+            matricula,
+            curso
         )
         st.success("Cadastro realizado com sucesso!")
         st.session_state.aluno_action = "login"
