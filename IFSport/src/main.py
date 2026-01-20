@@ -141,16 +141,17 @@ def mostrar_cadastro_aluno():
     )
 
     if st.button("Cadastrar", key="btn_confirmar_cadastro"):
-        aluno_repo.cadastrar_aluno(
-            nome,
-            email,
-            senha,
-            data_nascimento.isoformat(),
-            matricula,
-            curso
+        aluno_repo.cadastrar(
+            nome=nome,
+            email=email,
+            senha=senha,
+            data_nascimento=data_nascimento.isoformat(),
+            matricula=matricula,
+            curso=curso
         )
         st.success("Cadastro realizado com sucesso!")
         st.session_state.aluno_action = "login"
+
 
 def logout():
     st.session_state.page = "login"
