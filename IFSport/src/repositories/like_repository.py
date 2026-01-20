@@ -13,3 +13,5 @@ class LikeRepository:
             SELECT COUNT(*) FROM Curtida WHERE id_postagem = ?
         """, (id_postagem,))
         return self.db.fetchone()[0]
+
+#comunicação com o banco de dados. (DAO)

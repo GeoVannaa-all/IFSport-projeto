@@ -5,16 +5,17 @@ from repositories.modalidade_repository import ModalidadeRepository
 from repositories.database import Database
 from datetime import date
 
-# ================= CONFIG =================
+#as views estão diretamente no main, feitas com streamlit e representadas como funções.
+
 st.set_page_config(page_title="IFSPORT", layout="wide")
 
-# ================= BANCO =================
+#BANCO
 db = Database()
 aluno_repo = AlunoRepository(db)
 servidor_repo = ServidorRepository()
 modalidade_repo = ModalidadeRepository(db)
 
-# ================= SESSÃO =================
+
 if "page" not in st.session_state:
     st.session_state.page = "login"
 
@@ -30,7 +31,6 @@ if "menu" not in st.session_state:
 if "menu_admin" not in st.session_state:
     st.session_state.menu_admin = "postagens"
 
-# ================= ESTILO =================
 st.markdown("""
 <style>
 body {
@@ -59,7 +59,7 @@ body {
 </style>
 """, unsafe_allow_html=True)
 
-# ================= LOGIN =================
+
 def login_page():
     st.title("IFSPORT")
     st.subheader("Sistema Esportivo Institucional")
@@ -134,17 +134,15 @@ def mostrar_cadastro_aluno():
         st.success("Cadastro realizado com sucesso!")
         st.session_state.aluno_action = "login"
 
-# ================= LOGOUT =================
 def logout():
     st.session_state.page = "login"
     st.session_state.aluno_logado = None
     st.session_state.aluno_action = None
 
-# ================= DASHBOARD ALUNO =================
+
 def aluno_dashboard():
     aluno_id, aluno_nome = st.session_state.aluno_logado
 
-    # ===== HEADER =====
     col1, col2 = st.columns([3, 7])
 
     with col1:
@@ -164,7 +162,6 @@ def aluno_dashboard():
 
     st.markdown("<div class='main-container'>", unsafe_allow_html=True)
 
-    # ===== CONTEÚDO =====
     if st.session_state.menu == "feed":
         st.subheader("📰 Feed de Notícias")
 
@@ -182,7 +179,6 @@ def aluno_dashboard():
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-# ================= DASHBOARD ADMIN =================
 def servidor_dashboard():
     col1, col2 = st.columns([3, 7])
 
@@ -225,7 +221,6 @@ def servidor_dashboard():
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-# ================= CONTROLE =================
 if st.session_state.page == "login":
     login_page()
 elif st.session_state.page == "dashboard_aluno":

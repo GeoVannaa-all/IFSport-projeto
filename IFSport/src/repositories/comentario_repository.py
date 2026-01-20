@@ -13,3 +13,5 @@ class ComentarioRepository:
             SELECT texto FROM Comentario WHERE id_postagem = ?
         """, (id_postagem,))
         return self.db.fetchall()
+
+#comunicação com o banco de dados. (DAO)

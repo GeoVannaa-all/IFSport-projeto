@@ -11,3 +11,5 @@ class PostagemRepository:
     def listar(self):
         self.db.execute("SELECT * FROM Postagem ORDER BY data_postagem DESC")
         return self.db.fetchall()
+
+#comunicação com o banco de dados. (DAO)

@@ -5,39 +5,78 @@ from datetime import date
 class AlunoRepository:
     def __init__(self, db: Database):
         self.db = db
-
-    def cadastrar_aluno(self, nome, email, senha, data_nascimento, matricula, curso):
-        data_cadastro = date.today().isoformat()
+#comunicação com o banco de dados. (DAO)
+ 
+    # CADASTRO
+    
+    def cadastrar(self, nome, email, senha, data_nascimento, matricula, curso):
         sql = """
-        INSERT INTO Aluno (nome, email, senha, data_nascimento, matricula, curso, data_cadastro)
+        INSERT INTO Aluno 
+        (nome, email, senha, data_nascimento, matricula, curso, data_cadastro)
         VALUES (?, ?, ?, ?, ?, ?, ?)
         """
-        self.db.execute(sql, (nome, email, senha, data_nascimento, matricula, curso, data_cadastro))
+        self.db.execute(sql, (
+            nome,
+            email,
+            senha,
+            data_nascimento,
+            matricula,
+            curso,
+            date.today().isoformat()
+        ))
 
-    def login_aluno(self, email, senha):
-        sql = "SELECT * FROM Aluno WHERE email=? AND senha=?"
+    # LOGIN
+ 
+    def login(self, email, senha):
+        sql = "SELECT * FROM Aluno WHERE email = ? AND senha = ?"
         cursor = self.db.execute(sql, (email, senha))
-        return cursor.fetchone()
-    
-    def validar_login(self, email, senha):
-        query = "SELECT * FROM Aluno WHERE email = %s AND senha = %s"
-        self.db.query(query, (email, senha))
-        aluno_data = self.db.fetchone()
+        aluno_data = cursor.fetchone()
+
         if aluno_data:
             return Aluno(*aluno_data)
         return None
 
-    def inscrever_aluno_evento(self, aluno_id, modalidade_id):
-        query = "INSERT INTO Inscricao (id_aluno, id_modalidade, data_inscricao, status) VALUES (%s, %s, NOW(), 'Pendente')"
-        try:
-            self.db.query(query, (aluno_id, modalidade_id))
-            return True
-        except Exception as e:
-            print(e)
-            return False
+    # BUSCAR POR ID
+  
+    def buscar_por_id(self, id_aluno):
+        sql = "SELECT * FROM Aluno WHERE id_aluno = ?"
+        cursor = self.db.execute(sql, (id_aluno,))
+        aluno_data = cursor.fetchone()
 
-    def get_notificacoes(self, aluno_id):
-        query = "SELECT * FROM Notificacao WHERE id_aluno = %s"
-        self.db.query(query, (aluno_id,))
-        notificacoes_data = self.db.fetchall()
-        return [Notificacao(*n) for n in notificacoes_data]
+        if aluno_data:
+            return Aluno(*aluno_data)
+        return None
+
+   
+    # LISTAR TODOS
+  
+    def listar(self):
+        sql = "SELECT * FROM Aluno"
+        cursor = self.db.execute(sql)
+        alunos_data = cursor.fetchall()
+        return [Aluno(*a) for a in alunos_data]
+
+    # ATUALIZAR
+
+    def atualizar(self, aluno: Aluno):
+        sql = """
+        UPDATE Aluno
+        SET nome = ?, email = ?, senha = ?, data_nascimento = ?, matricula = ?, curso = ?
+        WHERE id_aluno = ?
+        """
+        self.db.execute(sql, (
+            aluno.nome,
+            aluno.email,
+            aluno.senha,
+            aluno.data_nascimento,
+            aluno.matricula,
+            aluno.curso,
+            aluno.id_aluno
+        ))
+
+    # EXCLUIR
+
+    def excluir(self, id_aluno):
+        sql = "DELETE FROM Aluno WHERE id_aluno = ?"
+        self.db.execute(sql, (id_aluno,))
+

@@ -14,3 +14,4 @@ class ModalidadeRepository:
             (modalidade_id,)
         )
 
+#comunicação com o banco de dados. (DAO)

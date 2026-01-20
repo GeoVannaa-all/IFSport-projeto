@@ -22,3 +22,5 @@ class InscricaoRepository:
             "UPDATE inscricao SET status = 'Aprovado' WHERE id = ?",
             (inscricao_id,)
         )
+
+#comunicação com o banco de dados. (DAO)
