@@ -9,7 +9,20 @@ class PostagemRepository:
         """, (titulo, conteudo, imagem, id_servidor))
 
     def listar(self):
-        self.db.execute("SELECT * FROM Postagem ORDER BY data_postagem DESC")
+        self.db.execute("""
+            SELECT 
+                p.id_postagem,
+                p.titulo,
+                p.conteudo,
+                p.imagem,
+                p.data_postagem,
+                (SELECT COUNT(*) FROM Curtida c WHERE c.id_postagem = p.id_postagem) AS curtidas
+            FROM Postagem p
+            ORDER BY p.data_postagem DESC
+        """)
         return self.db.fetchall()
 
-#comunicação com o banco de dados. (DAO)
+    def excluir(self, id_postagem):
+        self.db.execute("DELETE FROM Curtida WHERE id_postagem = ?", (id_postagem,))
+        self.db.execute("DELETE FROM Comentario WHERE id_postagem = ?", (id_postagem,))
+        self.db.execute("DELETE FROM Postagem WHERE id_postagem = ?", (id_postagem,))
