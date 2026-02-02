@@ -3,7 +3,7 @@ CREATE TABLE aluno (
     nome TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     senha TEXT NOT NULL,
-    data_nascimento DATE NOT NULL,
+    data_nascimento TEXT NOT NULL,
     matricula TEXT NOT NULL UNIQUE,
     curso TEXT NOT NULL,
     data_cadastro DATE NOT NULL
@@ -22,7 +22,7 @@ CREATE TABLE notificacao (
     id_notificacao INTEGER PRIMARY KEY AUTOINCREMENT,
     mensagem TEXT NOT NULL,
     data_envio DATE NOT NULL,
-    lida BOOLEAN NOT NULL,
+    lida INTEGER NOT NULL,
     id_aluno INTEGER,
     id_servidor INTEGER,
     FOREIGN KEY (id_aluno) REFERENCES aluno(id_aluno),

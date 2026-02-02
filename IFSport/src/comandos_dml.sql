@@ -1,4 +1,4 @@
-telefone = '9' || telefone
+-- telefone = '9' || telefone
 -- (a) UPDATE todos os registros
 UPDATE aluno SET curso = 'Curso Atualizado';
 

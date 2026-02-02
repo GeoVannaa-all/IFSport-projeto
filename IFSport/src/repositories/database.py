@@ -4,6 +4,8 @@ class Database:
     def __init__(self, db_name="sistema_esportivo.db"):
         self.connection = sqlite3.connect(db_name, check_same_thread=False)
         self.cursor = self.connection.cursor()
+        self.cursor.execute("PRAGMA foreign_keys = ON")
+
 
     def execute(self, query, params=()):
         self.cursor.execute(query, params)
