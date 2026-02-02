@@ -1,12 +1,21 @@
+from database.database import Database
+from datetime import datetime
+
 class InscricaoRepository:
-    def __init__(self, db):
+    def __init__(self, db: Database):
         self.db = db
 
     def solicitar(self, id_aluno, id_modalidade):
-        self.db.execute("""
-            INSERT INTO Inscricao (data_inscricao, status, id_aluno, id_modalidade)
-            VALUES (date('now'), 'PENDENTE', ?, ?)
-        """, (id_aluno, id_modalidade))
+        # 1. Cria a inscrição
+        sql_ins = """
+            INSERT INTO Inscricao (id_aluno, id_modalidade, data_inscricao, status) 
+            VALUES (?, ?, ?, 'PENDENTE')
+        """
+        self.db.execute(sql_ins, (id_aluno, id_modalidade, datetime.now().strftime("%Y-%m-%d")))
+
+        # 2. Decrementa uma vaga na modalidade
+        sql_upd = "UPDATE Modalidade SET vagas = vagas - 1 WHERE id_modalidade = ?"
+        self.db.execute(sql_upd, (id_modalidade,))
 
     def listar_pendentes(self):
         cursor = self.db.execute("""

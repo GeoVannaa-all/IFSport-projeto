@@ -1,13 +1,15 @@
-from repositories.database import Database
+from database.database import Database
 
 class ModalidadeRepository:
-    def __init__(self, db):
+    def __init__(self, db: Database):
         self.db = db
 
-    def listar(self):
-        cursor = self.db.execute("SELECT * FROM Modalidade")
+    def listar_disponiveis(self):
+        # Retorna apenas modalidades com vagas > 0
+        sql = "SELECT id_modalidade, nome, vagas FROM Modalidade WHERE vagas > 0"
+        cursor = self.db.execute(sql)
         return cursor.fetchall()
-
+    
     def criar(self, nome, vagas):
         self.db.execute("""
             INSERT INTO Modalidade (nome, descricao, vagas, status)
