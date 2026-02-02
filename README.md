@@ -27,8 +27,7 @@ A estrutura do repositório está organizada da seguinte forma:
 
 ```
 IFSport/
-│
-├── diagramas-fontes/    
+│   
 |      
 ├── docs/          
  (documentos do sistema)
@@ -37,8 +36,10 @@ IFSport/
 |      └── diagrama-de-classes/
 |      └── requisitos/
 |      └── visao-do-produto/
+|
 ├── scr/               
  (codigo do sistema)
+│   └── assets/
 │   └── models/
 |   └── repositories/
 |   └── database.py
@@ -52,7 +53,7 @@ IFSport/
 1. Acesse a pasta do projeto:
 
    ```bash
-   cd IFSport
+   cd IFSport/src
    ```
 2. Execute o arquivo principal:
 
