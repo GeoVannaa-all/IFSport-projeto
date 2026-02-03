@@ -6,14 +6,39 @@ from dao.like_repository import LikeRepository
 from dao.modalidade_repository import ModalidadeRepository
 from dao.inscricao_repository import InscricaoRepository
 from dao.aluno_repository import AlunoRepository
+from dao.comentario_repository import ComentarioRepository 
+from templates.styles import carregar_estilos
+
+
+def renderizar_comentario_bonito(nome, texto, data):
+    # Gera avatar com as iniciais
+    nome_url = nome.replace(" ", "+")
+    avatar_url = f"https://ui-avatars.com/api/?name={nome_url}&background=random&color=fff&size=64"
+
+    html = f"""
+    <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px;">
+        <img src="{avatar_url}" style="width: 38px; height: 38px; border-radius: 50%; border: 1px solid #e0e0e0;">
+        <div style="background-color: #f0f2f6; padding: 10px 14px; border-radius: 0px 15px 15px 15px; flex-grow: 1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span style="font-weight: bold; color: #333; font-size: 13px;">{nome}</span>
+                <span style="font-size: 10px; color: #888;">{data}</span>
+            </div>
+            <div style="color: #222; font-size: 14px; line-height: 1.4;">
+                {texto}
+            </div>
+        </div>
+    </div>
+    """
+    return html
 
 def aluno_dashboard(db):
-    #INICIALIZAÇÃO
+    # INICIALIZAÇÃO 
     postagem_repo = PostagemRepository(db)
     like_repo = LikeRepository(db)
     modalidade_repo = ModalidadeRepository(db)
     inscricao_repo = InscricaoRepository(db)
-    aluno_repo = AlunoRepository(db) 
+    aluno_repo = AlunoRepository(db)
+    comentario_repo = ComentarioRepository(db)
 
     # Verificação de segurança
     if "aluno_logado" not in st.session_state or not st.session_state.aluno_logado:
@@ -22,7 +47,7 @@ def aluno_dashboard(db):
         
     aluno_id_sessao, aluno_nome_sessao = st.session_state.aluno_logado
 
-    # BUSCA DE DADOS REAIS 
+    #BUSCA DE DADOS REAIS 
     dados_completos = aluno_repo.buscar_por_id(aluno_id_sessao)
     
     if dados_completos:
@@ -40,16 +65,16 @@ def aluno_dashboard(db):
     col_logo, col_logout = st.columns([8, 1])
     
     with col_logo:
-        st.title("IFSport") 
+        st.title(f"Olá, {real_nome.split()[0]} 👋") 
     
     with col_logout:
         if st.button("Sair", type="primary", help="Sair do sistema"):
             logout()
 
-    # BARRA DE NAVEGAÇÃO (ABAS) 
+    #BARRA DE NAVEGAÇÃO
     tab_feed, tab_inscricoes, tab_perfil = st.tabs(["📰 Feed de Notícias", "🏅 Inscrições", "👤 Meu Perfil"])
 
-    # FEED 
+    #FEED
     with tab_feed:
         st.markdown("### Últimas Atualizações")
         postagens = postagem_repo.listar()
@@ -62,23 +87,25 @@ def aluno_dashboard(db):
             
             curtidas = like_repo.contar(id_post)
             curtiu = like_repo.usuario_curtiu(id_post, aluno_id_sessao)
+            
+            # Conta quantos comentários existem
+            qtd_comentarios = comentario_repo.contar(id_post)
 
             with st.container(border=True):
-             
+                #Imagem e Conteúdo
                 if imagem_b64:
                     try:
-                       
                         st.image(base64.b64decode(imagem_b64), width=350)
                     except:
                         st.error("Erro ao carregar imagem")
-             
 
                 st.subheader(titulo)
                 st.write(conteudo)
-                st.caption(f"Publicado em: {data_post}")
+                st.caption(f"📅 {data_post}")
                 st.markdown("---")
                 
-                c1, c2 = st.columns([1, 4])
+                #Área de Likes e Info
+                c1, c2 = st.columns([1, 3])
                 with c1:
                     label_btn = "Descurtir" if curtiu else "Curtir"
                     tipo_btn = "primary" if curtiu else "secondary"
@@ -92,16 +119,58 @@ def aluno_dashboard(db):
                         st.rerun()
                 
                 with c2:
-                    st.caption(f"{curtidas} pessoas curtiram isso")
+                    st.caption(f"👍 {curtidas} curtidas • 💬 {qtd_comentarios} comentários")
 
-    #INSCRIÇÕES 
+                #ÁREA DE COMENTÁRIOS
+                with st.expander(f"Ver discussão ({qtd_comentarios})"):
+                    # Lista comentários existentes
+                    lista_coments = comentario_repo.listar_por_postagem(id_post)
+                    
+                    if not lista_coments:
+                        st.caption("Seja o primeiro a comentar!")
+                    else:
+                        st.markdown("<br>", unsafe_allow_html=True) # Espaçamento
+                        for autor_coment, texto_coment, data_coment in lista_coments:
+                            # AQUI ESTÁ A MUDANÇA VISUAL:
+                            st.markdown(renderizar_comentario_bonito(autor_coment, texto_coment, data_coment), unsafe_allow_html=True)
+
+                st.markdown("---")
+                
+                # FORMULÁRIO MINIMALISTA
+                # clear_on_submit=True limpa o texto automaticamente ao enviar
+                with st.form(key=f"form_coment_{id_post}", clear_on_submit=True):
+                    
+                    # Colunas: Input grande na esquerda, Botão pequeno na direita
+                    c_input, c_btn = st.columns([6, 1], gap="small")
+                    
+                    with c_input:
+                        # label_visibility="collapsed" esconde o título "Comentar"
+                        novo_texto = st.text_input(
+                            label="Comentar", 
+                            placeholder="Escreva um comentário...", 
+                            label_visibility="collapsed"
+                        )
+                    
+                    with c_btn:
+                        # Botão apenas com ícone, sem cor de fundo (estilo definido no CSS)
+                        enviou = st.form_submit_button("➤", use_container_width=True)
+                    
+                    if enviou and novo_texto:
+                        sucesso = comentario_repo.adicionar(aluno_id_sessao, id_post, novo_texto)
+                        if sucesso:
+                            # Feedback discreto (toast em vez de success box grande)
+                            st.toast("Comentário enviado!", icon="✅")
+                            time.sleep(0.5)
+                            st.rerun()
+
+    #INSCRIÇÕES
     with tab_inscricoes:
         c_disp, c_minhas = st.columns(2)
         
         inscricoes_aluno = inscricao_repo.buscar_por_aluno(aluno_id_sessao)
         nomes_inscritos = {nome for nome, _ in inscricoes_aluno}
 
-        # Coluna Esquerda: Disponíveis
+        #Disponíveis
         with c_disp:
             st.markdown("#### 🎯 Modalidades Abertas")
             modalidades = modalidade_repo.listar_disponiveis()
@@ -122,7 +191,6 @@ def aluno_dashboard(db):
                     else:
                         st.warning("Esgotado ❌")
 
-    
         with c_minhas:
             st.markdown("#### 📋 Minhas Solicitações")
             if not inscricoes_aluno:
@@ -141,18 +209,20 @@ def aluno_dashboard(db):
                     with col_badge:
                         st.markdown(f":{cor_status}[{status}]")
 
-    # PERFIL
+    #PERFIL
     with tab_perfil:
         st.markdown("### Configurações da Conta")
         
         with st.container(border=True):
-            col_avatar, col_info = st.columns([1, 4])
+            col_avatar, col_info = st.columns([2, 6], gap="medium")
             
             with col_avatar:
                 nome_fmt = real_nome.replace(" ", "+")
-                st.image(f"https://ui-avatars.com/api/?name={nome_fmt}&background=0D8ABC&color=fff&size=128", width=100)
+                st.image(f"https://ui-avatars.com/api/?name={nome_fmt}&background=0D8ABC&color=fff&size=256", width=180)
             
             with col_info:
+                # Usei um espaçamento vertical para alinhar o texto com o meio da foto maior
+                st.markdown("<div style='padding-top: 20px;'></div>", unsafe_allow_html=True)
                 st.markdown(f"## {real_nome}")
                 st.markdown(f"**Matrícula:** `{real_matricula}`")
                 st.caption("Aluno Regular • IFSport")

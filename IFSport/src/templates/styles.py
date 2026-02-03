@@ -3,70 +3,110 @@ import streamlit as st
 def carregar_estilos():
     st.markdown("""
     <style>
-    body {
-        background-color: #0e1117;
-    }
+        /* =============================================
+           1. LAYOUT, ZOOM E RESPONSIVIDADE
+           ============================================= */
+        
+        /* AUMENTA TUDO EM 10% */
+        html {
+            font-size: 110% !important;
+        }
 
-    .header-title {
-        font-size: 28px;
-        font-weight: bold;
-        color: #00c853;
-    }
+        /* .block-container é a classe mestre do Streamlit */
+        .block-container {
+            max-width: 1200px !important; /* Aumentado para 1200px (Bem mais largo) */
+            padding-top: 2rem !important;
+            padding-bottom: 5rem !important;
+            margin: auto !important;
+        }
 
-    .main-container {
-        max-width: 900px;
-        margin: auto;
-        padding-top: 30px;
-    }
+        /* Fundo geral */
+        .stApp {
+            background-color: #0e1117;
+        }
+        
+        /* Fontes mais limpas */
+        p, .stMarkdown, div, h1, h2, h3 {
+            font-family: 'Segoe UI', sans-serif !important;
+        }
 
-    .card {
-        background-color: #161b22;
-        padding: 20px;
-        border-radius: 14px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.35);
-        transition: 0.2s ease;
-    }
+        /* =============================================
+           2. ESTILIZAÇÃO DOS CONTAINERS (CARDS)
+           ============================================= */
+        
+        div[data-testid="stVerticalBlockBorderWrapper"] {
+            background-color: #161b22;
+            border: 1px solid #30363d !important;
+            border-radius: 12px !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px !important; /* Aumentei um pouco o padding interno */
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+        }
+        
+        div[data-testid="stVerticalBlockBorderWrapper"]:hover {
+             border-color: #8b949e !important;
+        }
 
-    .card:hover {
-        box-shadow: 0 6px 18px rgba(0,0,0,0.45);
-        transform: scale(1.01);
-    }
+        /* =============================================
+           3. TIPOGRAFIA E ELEMENTOS
+           ============================================= */
+        
+        h1, h2, h3 {
+            color: #ffffff !important;
+        }
 
-    .card h3 {
-        margin-bottom: 6px;
-        color: #ffffff;
-    }
+        p, div, span {
+            color: #c9d1d9;
+        }
 
-    .card p {
-        color: #c9d1d9;
-    }
+        div.stButton > button {
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            height: auto !important;
+            padding-top: 0.6rem !important;
+            padding-bottom: 0.6rem !important;
+        }
+        
+        /* Remove a borda padrão do st.form para ficar invisível */
+        div[data-testid="stForm"] {
+            border: none !important;
+            padding: 0px !important;
+        }
 
-    .card-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 12px;
-        font-size: 14px;
-        color: #9da5b4;
-    }
-                
-    .feed-container {
-    border: 1px solid #30363d;
-    border-radius: 18px;
-    padding: 25px;
-    background-color: #0d1117;
-    margin-top: 25px;
-    }
+        /* Estiliza o campo de input para ser mais discreto */
+        div[data-testid="stForm"] input {
+            background-color: #0d1117 !important; /* Mais escuro que o card */
+            border: 1px solid #30363d !important;
+            color: #e6edf3 !important;
+            border-radius: 6px !important;
+        }
+        
+        div[data-testid="stForm"] input:focus {
+            border-color: #58a6ff !important;
+            box-shadow: none !important;
+        }
 
-    .feed-title {
-        font-size: 22px;
-        font-weight: bold;
-        margin-bottom: 18px;
-        color: #ffffff;
-        border-bottom: 1px solid #30363d;
-        padding-bottom: 10px;
-    }
+        /* Botão de enviar minimalista (dentro do form) */
+        div[data-testid="stForm"] button {
+            background-color: transparent !important;
+            border: 1px solid #30363d !important;
+            color: #8b949e !important;
+            font-size: 14px !important;
+            padding: 0.4rem 1rem !important;
+            margin-top: 2px !important; /* Alinhamento fino com o input */
+        }
 
+        div[data-testid="stForm"] button:hover {
+            border-color: #8b949e !important;
+            color: #ffffff !important;
+            background-color: #21262d !important;
+        }
+
+        /* Remove o espaço extra que o Streamlit coloca nos forms */
+        div[data-testid="stForm"] .stElementContainer {
+            margin-bottom: 0px !important;
+        }
     </style>
     """, unsafe_allow_html=True)
