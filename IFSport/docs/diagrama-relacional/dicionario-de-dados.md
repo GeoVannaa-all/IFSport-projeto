@@ -1,115 +1,131 @@
-# Dicionário de Dados — IFSPORT
+# 📚 Dicionário de Dados — IFSPORT
 
-Este dicionário descreve todas as tabelas do modelo relacional do sistema IFSPORT, incluindo seus atributos, tipos de dados, chaves primárias (PK) e chaves estrangeiras (FK).
+Este documento descreve detalhadamente a estrutura do banco de dados do sistema **IFSPORT**. Abaixo estão listadas todas as tabelas, seus atributos, tipos de dados e chaves (Primárias e Estrangeiras).
 
 ---
 
-## 1. Tabela: USUARIO
-
-Armazena os dados dos usuários do sistema, incluindo alunos e servidores.
+## 1. Tabela: ALUNO
+Armazena as informações dos estudantes cadastrados no sistema.
 
 | Campo | Tipo | Descrição | Chave |
-|------|-----|---------|------|
-| id_usuario | INT | Identificador único do usuário | PK |
-| nome | VARCHAR | Nome completo do usuário | |
-| email | VARCHAR | E-mail do usuário | |
-| senha | VARCHAR | Senha criptografada | |
-| tipo | VARCHAR | Indica se é aluno ou servidor | |
-| telefone | VARCHAR | Telefone para contato | |
-| data_cadastro | DATE | Data de criação da conta | |
+| :--- | :--- | :--- | :--- |
+| **id_aluno** | `INTEGER` | Identificador único do aluno (Auto-incremento) | **PK** |
+| nome | `TEXT` | Nome completo do aluno | |
+| email | `TEXT` | E-mail institucional do aluno | **UK** |
+| senha | `TEXT` | Hash da senha de acesso | |
+| matricula | `TEXT` | Número da matrícula acadêmica | **UK** |
+| curso | `TEXT` | Curso em que o aluno está matriculado | |
+| data_nascimento | `TEXT` | Data de nascimento do aluno | |
+| data_cadastro | `TEXT` | Data de registro no sistema | |
 
 ---
 
-## 2. Tabela: MODALIDADE
-
-Representa as modalidades esportivas disponíveis.
+## 2. Tabela: SERVIDOR
+Armazena os dados dos funcionários e professores com acesso administrativo.
 
 | Campo | Tipo | Descrição | Chave |
-|------|-----|---------|------|
-| id_modalidade | INT | Identificador da modalidade | PK |
-| nome | VARCHAR | Nome do esporte | |
-| descricao | VARCHAR | Descrição da modalidade | |
+| :--- | :--- | :--- | :--- |
+| **id_servidor** | `INTEGER` | Identificador único do servidor (Auto-incremento) | **PK** |
+| nome | `TEXT` | Nome completo do servidor | |
+| email | `TEXT` | E-mail institucional do servidor | **UK** |
+| senha | `TEXT` | Hash da senha de acesso | |
+| cargo | `TEXT` | Função exercida (ex: Coordenador, Treinador) | |
+| data_cadastro | `TEXT` | Data de registro no sistema | |
 
 ---
 
-## 3. Tabela: SELETIVA
-
-Armazena processos seletivos ligados a uma modalidade.
+## 3. Tabela: MODALIDADE
+Representa os esportes e atividades disponíveis no campus.
 
 | Campo | Tipo | Descrição | Chave |
-|------|-----|---------|------|
-| id_seletiva | INT | Identificador da seletiva | PK |
-| nome | VARCHAR | Nome da seletiva | |
-| data_seletiva | DATE | Data de realização | |
-| id_modalidade | INT | Modalidade associada | FK |
+| :--- | :--- | :--- | :--- |
+| **id_modalidade** | `INTEGER` | Identificador único da modalidade | **PK** |
+| nome | `TEXT` | Nome do esporte (ex: Futsal, Vôlei) | |
+| descricao | `TEXT` | Detalhes sobre treinos e regras | |
+| vagas | `INTEGER` | Quantidade total de vagas ofertadas | |
+| status | `TEXT` | Situação atual (ex: Aberta, Fechada, Em Análise) | |
 
 ---
 
-## 4. Tabela: INSCRICAO_MODALIDADE
-
-Registra a inscrição de usuários em modalidades esportivas.
+## 4. Tabela: INSCRICAO
+Registra o vínculo de interesse de um aluno em uma modalidade.
 
 | Campo | Tipo | Descrição | Chave |
-|------|-----|---------|------|
-| id_inscricao | INT | Identificador da inscrição | PK |
-| id_usuario | INT | Usuário inscrito | FK |
-| id_modalidade | INT | Modalidade escolhida | FK |
-| data_inscricao | DATE | Data da inscrição | |
-| status | VARCHAR | Situação da inscrição (pendente, aprovada, recusada) | |
+| :--- | :--- | :--- | :--- |
+| **id_inscricao** | `INTEGER` | Identificador único da inscrição | **PK** |
+| data_inscricao | `TEXT` | Data em que o aluno solicitou a vaga | |
+| status | `TEXT` | Estado da inscrição (Pendente, Aprovado, Recusado) | |
+| id_aluno | `INTEGER` | Aluno que realizou a inscrição | **FK** |
+| id_modalidade | `INTEGER` | Modalidade desejada | **FK** |
 
 ---
 
-## 5. Tabela: INSCRICAO_SELETIVA
-
-Registra a participação do usuário em uma seletiva.
+## 5. Tabela: SELETIVA
+Armazena os eventos de seleção para times ou competições específicas.
 
 | Campo | Tipo | Descrição | Chave |
-|------|-----|---------|------|
-| id_inscricao | INT | Identificador da inscrição | PK |
-| id_usuario | INT | Usuário participante | FK |
-| id_seletiva | INT | Seletiva associada | FK |
-| status | VARCHAR | Situação da inscrição | |
+| :--- | :--- | :--- | :--- |
+| **id_seletiva** | `INTEGER` | Identificador único da seletiva | **PK** |
+| data | `TEXT` | Data e hora da realização do evento | |
+| local | `TEXT` | Local da seletiva (ex: Ginásio, Campo) | |
+| criterio | `TEXT` | Critérios técnicos que serão avaliados | |
+| id_modalidade | `INTEGER` | Modalidade à qual a seletiva pertence | **FK** |
 
 ---
 
----
-
-## 6. Tabela: POSTAGEM
-
-Armazena notícias e comunicados publicados por servidores.
+## 6. Tabela: RESULTADO_SELETIVA
+Registra o desempenho e a aprovação dos alunos que participaram de seletivas.
 
 | Campo | Tipo | Descrição | Chave |
-|------|-----|---------|------|
-| id_postagem | INT | Identificador da postagem | PK |
-| titulo | VARCHAR | Título da postagem | |
-| conteudo | TEXT | Conteúdo da postagem | |
-| data_publicacao | DATE | Data de publicação | |
-| id_servidor | INT | Servidor responsável | FK |
+| :--- | :--- | :--- | :--- |
+| **id_seletiva** | `INTEGER` | Identificador da seletiva realizada | **PK, FK** |
+| **id_aluno** | `INTEGER` | Identificador do aluno avaliado | **PK, FK** |
+| resultado | `TEXT` | Parecer final (ex: Aprovado, Lista de Espera) | |
+| observacao | `TEXT` | Notas ou comentários técnicos do treinador | |
 
 ---
 
-## 7. Tabela: NOTIFICACAO
-
-Armazena notificações criadas pelos servidores.
+## 7. Tabela: POSTAGEM
+Armazena as notícias, avisos e comunicados do feed.
 
 | Campo | Tipo | Descrição | Chave |
-|------|-----|---------|------|
-| id_notificacao | INT | Identificador da notificação | PK |
-| titulo | VARCHAR | Título da notificação | |
-| mensagem | TEXT | Conteúdo da notificação | |
-| data_envio | DATE | Data de envio | |
-| id_servidor | INT | Servidor emissor | FK |
+| :--- | :--- | :--- | :--- |
+| **id_postagem** | `INTEGER` | Identificador único da postagem | **PK** |
+| titulo | `TEXT` | Manchete da notícia | |
+| conteudo | `TEXT` | Corpo do texto da postagem | |
+| imagem | `TEXT` | Caminho ou string Base64 da imagem ilustrativa | |
+| data_postagem | `TEXT` | Data de publicação | |
+| id_servidor | `INTEGER` | Servidor autor da postagem | **FK** |
 
 ---
 
-## 8. Tabela: USUARIO_NOTIFICACAO
-
-Tabela intermediária que relaciona usuários e notificações recebidas.
+## 8. Tabela: CURTIDA
+Registra as interações (likes) dos alunos nas postagens.
 
 | Campo | Tipo | Descrição | Chave |
-|------|-----|---------|------|
-| id_usuario | INT | Usuário que recebeu a notificação | PK, FK |
-| id_notificacao | INT | Notificação recebida | PK, FK |
-| lida | BOOLEAN | Indica se a notificação foi visualizada | |
+| :--- | :--- | :--- | :--- |
+| **id_curtida** | `INTEGER` | Identificador único da curtida | **PK** |
+| id_aluno | `INTEGER` | Aluno que curtiu | **FK** |
+| id_postagem | `INTEGER` | Postagem que recebeu a curtida | **FK** |
 
 ---
+
+## 9. Tabela: NOTIFICACAO
+Armazena mensagens enviadas diretamente aos alunos.
+
+| Campo | Tipo | Descrição | Chave |
+| :--- | :--- | :--- | :--- |
+| **id_notificacao** | `INTEGER` | Identificador único da notificação | **PK** |
+| mensagem | `TEXT` | Conteúdo do aviso | |
+| data_envio | `TEXT` | Data de envio da notificação | |
+| lida | `INTEGER` | Status de leitura (0 = Não lida, 1 = Lida) | |
+| id_aluno | `INTEGER` | Aluno destinatário | **FK** |
+| id_servidor | `INTEGER` | Servidor remetente (opcional) | **FK** |
+
+---
+
+### Legenda:
+* **PK:** Primary Key (Chave Primária)
+* **FK:** Foreign Key (Chave Estrangeira)
+* **UK:** Unique Key (Chave Única - não permite valores repetidos)
+* **Tipos:** Os tipos (`TEXT`, `INTEGER`) refletem a implementação em SQLite, onde datas são armazenadas como texto.
