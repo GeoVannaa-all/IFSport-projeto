@@ -39,12 +39,15 @@ IFSport/
 |
 ├── scr/               
  (codigo do sistema)
-│   └── assets/
+│   └── dao/
+│   └── database/
 │   └── models/
-|   └── repositories/
-|   └── database.py
+|   └── templates/
+|   └── venv/
+|   └── views/
 |   └── main.py
-|   └── sistema_esportivo.sql
+|   └── fix_db.py
+|   └── reset_admin.py
 |    
 └── README.md              
 ```
@@ -55,12 +58,16 @@ IFSport/
    ```bash
    cd IFSport/src
    ```
-2. Execute o arquivo principal:
+2. ative o venv:
 
    ```bash
-   python main.py
+   source venv/bin/activate
    ```
-3. O banco de dados será criado automaticamente e os dados de teste serão exibidos no terminal.
+3. Execute o arquivo principal:
+
+   ```bash
+   streamlit run main.py
+   ```
 
 ---
 
